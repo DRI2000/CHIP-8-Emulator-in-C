@@ -3,10 +3,12 @@
 
 #include "config.h"
 #include "chip8memory.h"
+#include "chip8registers.h"
 
 struct chip8 // All CHIP-8 internals will be stored here
 {
 	struct chip8_memory memory;
+	struct chip8_registers registers;
 };
 
 #endif

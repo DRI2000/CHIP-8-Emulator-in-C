@@ -5,6 +5,7 @@
 int main()
 {
 	struct chip8 chip8;
+	chip8.registers.V[15] = 50;
 	chip8_memory_set(&chip8.memory, 50, 'Z');
 	printf("%c\n", chip8_memory_get(&chip8.memory, 50));
 
