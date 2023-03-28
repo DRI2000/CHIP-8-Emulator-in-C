@@ -1,13 +1,20 @@
 #include <stdio.h>
+#include <stdbool.h>
 #include "SDL2/SDL.h"
 #include "chip8.h"
+#include "chip8keyboard.h"
+
+// Array containing the actual keyboard keys according to SDL keyboard events
+const char keyboard_map[CHIP8_TOTAL_KEYS] = {
+		SDLK_1, SDLK_2, SDLK_3, SDLK_4,
+		SDLK_q, SDLK_w, SDLK_e, SDLK_r,
+		SDLK_a, SDLK_s, SDLK_d, SDLK_f,
+		SDLK_z, SDLK_x, SDLK_c, SDLK_v
+};
 
 int main()
 {
 	struct chip8 chip8;
-	chip8.registers.V[15] = 50;
-	chip8_memory_set(&chip8.memory, 50, 'Z');
-	printf("%c\n", chip8_memory_get(&chip8.memory, 50));
 
 	// SDL Setup and Initialization
 	SDL_Init(SDL_INIT_EVERYTHING);
@@ -27,9 +34,33 @@ int main()
 		SDL_Event event;
 		while(SDL_PollEvent(&event))
 		{
-			if (event.type == SDL_QUIT)
+			switch(event.type)
 			{
-				goto out;
+				case SDL_QUIT:
+					goto out;
+				break;
+
+				case SDL_KEYDOWN:
+				{
+					char key = event.key.keysym.sym; // Capture the key being pressed
+					int vkey = chip8_keyboard_map(keyboard_map, key); // Search for the equivalent key on map and stores it as a virtual key
+					if (vkey != -1)
+					{
+						chip8_keyboard_down(&chip8.keyboard, vkey);
+					}
+				}
+				break;
+
+				case SDL_KEYUP:
+				{
+					char key = event.key.keysym.sym; // Capture the key being released
+					int vkey = chip8_keyboard_map(keyboard_map, key); // Search for the equivalent key on map and stores it as a virtual key
+					if (vkey != -1)
+					{
+						chip8_keyboard_up(&chip8.keyboard, vkey);
+					}
+				}
+				break;
 			}
 		}
 		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
