@@ -15,4 +15,6 @@ struct chip8 // All CHIP-8 internals will be stored here
 	struct chip8_keyboard keyboard;
 };
 
+void chip8_init(struct chip8* chip8);
+
 #endif
